@@ -1,9 +1,10 @@
 # Test of Python to read files
 
 # Necessary imports
-import urllib as urllib # For download of Criticker file
-import sys as sys       # Command line inputs
-import getopt as getopt # Support command line options parsing
+import urllib # For download of Criticker file
+import sys    # Command line inputs
+import getopt # Support command line options parsing
+import math   # Math functions
 
 def main(argv):
 
@@ -23,21 +24,24 @@ def main(argv):
     endYear = "2500"
     numPrint = "1000000"
     try:
-        options, argument = getopt.getopt(argv,"hs:e:n:", ["sy=", "ey=", "num="])
+        options, argument = getopt.getopt(argv,"hs:e:n:", ["startyear=", "endyear=", "numbertoprint="])
     except getopt.GetoptError:
         print( "Options are -s <startyear> -e <endyear> -n <number>" )
         sys.exit(2)
     #
     for option, argument in options:
         if option == '-h':
-            print( "Options are -s <startyear> -e <endyear>" )
+            print( "Options are -s <startyear> -e <endyear> -n <numbertosave>" )
             sys.exit()
-        elif option in ( "-s", "--sy" ):
-            startYear = argument
-        elif option in ( "-e", "--ey" ):
-             endYear = argument
-        elif option in ( "-n", "--num" ):
-             numPrint = argument
+        elif option in ( "-s", "--startyear" ):
+            startYearString = argument
+            startYear = int( math.floor( float( startYearString ) ) )
+        elif option in ( "-e", "--endyear" ):
+             endYearString = argument
+             endYear = int( math.floor( float( endYearString ) ) )
+        elif option in ( "-n", "--numbertoprint" ):
+             numPrintString = argument
+             numPrint = int( math.floor( float( numPrintString ) ) )
         #
     #
     print( "Saving the top " + numPrint + " movies between " + startYear + " and " + endYear + "." )
@@ -89,6 +93,30 @@ def main(argv):
         #
     #
 
+    # Ensure the bounds and values are appropriate
+    if ( startYear < endYear ):
+        startYear, endYear = endYear, startYear
+    #
+
+    # Find all the years that fall in the approriate range
+    validEntryInds = []
+    indCount = -1
+    for entry in allEntries:
+        indCount = indCount + 1
+        afterStartYear = ( entry["Year"] >= startYear ) 
+        beforeEndYear = ( entry["Year"] <= endYear )
+        if ( afterStartYear and beforeEndYear ):
+            validEntryInds.append(indCount)
+        #
+    #
+    validEntries = [ allEntries[count] for count in  validEntryInds ]    
+
+    # Print valid entries
+    for entry in validEntries:
+        print( entry["Year"] + " " + entry["Title"] )
+    #
+
+     
 #
 
 
