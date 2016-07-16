@@ -1,9 +1,11 @@
-# Test of puthon to read files
+# Test of Python to read files
 
 # Necessary imports
-import urllib as urllib
+import urllib as urllib # For download of Criticker file
+import sys as sys       # Command line inputs
+import getopt as getopt # Support command line options parsing
 
-def main():
+def main(argv):
 
     # Download text file
     urllib.urlretrieve("https://www.criticker.com/resource/rankings/conv.php?userid=38891&type=txt&filter=", "./rankings.txt")
@@ -15,6 +17,30 @@ def main():
     fileStream = open( fileToRead, "r" )
     allLines = fileStream.readlines()
     fileStream.close()
+
+    # Get the number of entries to print to file
+    startYear = "1850"
+    endYear = "2500"
+    numPrint = "1000000"
+    try:
+        options, argument = getopt.getopt(argv,"hs:e:n:", ["sy=", "ey=", "num="])
+    except getopt.GetoptError:
+        print( "Options are -s <startyear> -e <endyear> -n <number>" )
+        sys.exit(2)
+    #
+    for option, argument in options:
+        if option == '-h':
+            print( "Options are -s <startyear> -e <endyear>" )
+            sys.exit()
+        elif option in ( "-s", "--sy" ):
+            startYear = argument
+        elif option in ( "-e", "--ey" ):
+             endYear = argument
+        elif option in ( "-n", "--num" ):
+             numPrint = argument
+        #
+    #
+    print( "Saving the top " + numPrint + " movies between " + startYear + " and " + endYear + "." )
 
     # Initialize new entry flag
     newEntryFound = False
@@ -60,12 +86,12 @@ def main():
 
             # Append new entry to array
             allEntries.append( newEntry )
-            print( ratingString + " " + titleString + ", " + yearString )
-        
         #
-
-
     #
+
 #
 
-main() 
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
+#
