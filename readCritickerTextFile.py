@@ -20,9 +20,9 @@ def main(argv):
     fileStream.close()
 
     # Get the number of entries to print to file
-    startYear = "1850"
-    endYear = "2500"
-    numPrint = "1000000"
+    startYear = int(1850)
+    endYear = int(2500)
+    numPrint = int(1000000)
     try:
         options, argument = getopt.getopt(argv,"hs:e:n:", ["startyear=", "endyear=", "numbertoprint="])
     except getopt.GetoptError:
@@ -44,7 +44,7 @@ def main(argv):
              numPrint = int( math.floor( float( numPrintString ) ) )
         #
     #
-    print( "Saving the top " + numPrint + " movies between " + startYear + " and " + endYear + "." )
+    print( "Saving the top " + str(numPrint) + " movies between " + str(startYear) + " and " + str(endYear) + "." )
 
     # Initialize new entry flag
     newEntryFound = False
@@ -94,7 +94,7 @@ def main(argv):
     #
 
     # Ensure the bounds and values are appropriate
-    if ( startYear < endYear ):
+    if ( startYear > endYear ):
         startYear, endYear = endYear, startYear
     #
 
@@ -113,12 +113,9 @@ def main(argv):
 
     # Print valid entries
     for entry in validEntries:
-        print( entry["Year"] + " " + entry["Title"] )
+        print( str(entry["Year"]) + " " + entry["Title"] )
     #
-
-     
 #
-
 
 if __name__ == "__main__":
     main(sys.argv[1:])
